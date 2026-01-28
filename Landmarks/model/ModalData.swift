@@ -7,8 +7,13 @@
 
 import Foundation
 
-// landmarks is an array of Landmark objects loaded from a JSON file
-var landmarks: [Landmark] = load("landmarkData.json")
+@Observable
+class ModelData {
+    // landmarks is an array of Landmark objects loaded from a JSON file
+    var landmarks: [Landmark] = load("landmarkData.json")
+}
+
+
 
 // load function: loads a JSON file from the bundle and decodes it into any Decodable type T
 func load<T: Decodable>(_ filename: String) -> T {
