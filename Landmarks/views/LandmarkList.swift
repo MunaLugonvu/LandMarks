@@ -7,6 +7,15 @@
 import SwiftUI
 
 struct LandmarkList: View {
+    @State private var showFavoritesOnly = false
+    
+    
+    var filteredLandmarks: [Landmark] {
+        landmarks.filter { landmark in
+            (!showFavoritesOnly || landmark.isFavorite)
+        }
+    }
+
     var body: some View {
         // NavigationSplitView creates a master–detail layout
         // Left side = list, Right side = detail view
@@ -14,29 +23,37 @@ struct LandmarkList: View {
 
             // List takes a data source (landmarks)
             // SwiftUI automatically loops over each item
-            List(landmarks) {
-
-                // landmark in:
-                // This is like Array.map(...)
-                // For each landmark in the landmarks array,
-                // build ONE row using the code below
-                landmark in
-
-                // NavigationLink defines navigation behavior
-                // When the row is tapped, navigate to LandmarkDetail
-                NavigationLink {
-
-                    // Destination view (what opens when tapped)
-                    LandmarkDetail(landmark: landmark)
-
-                } label: {
-
-                    // Label view (what the row looks like)
-                    // Each row is a LandmarkRow built from the landmark data
-                    LandmarkRow(Landmark: landmark)
+            List{
+                Toggle(isOn: $showFavoritesOnly) {
+                                  Text("Favorites only")
+                              }
+                ForEach(filteredLandmarks)
+                {
+                    
+                    // landmark in:
+                    // This is like Array.map(...)
+                    // For each landmark in the landmarks array,
+                    // build ONE row using the code below
+                    landmark in
+                    
+                    // NavigationLink defines navigation behavior
+                    // When the row is tapped, navigate to LandmarkDetail
+                    NavigationLink {
+                        
+                        // Destination view (what opens when tapped)
+                        LandmarkDetail(landmark: landmark)
+                        
+                    } label: {
+                        
+                        // Label view (what the row looks like)
+                        // Each row is a LandmarkRow built from the landmark data
+                        LandmarkRow(Landmark: landmark)
+                    }
                 }
             }
+            .animation(.default, value: filteredLandmarks)
             // Title shown at the top of the navigation list
+            
             .navigationTitle("Landmarks")
 
         } detail: {
